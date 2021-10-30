@@ -5,6 +5,7 @@ Feature: display list of movies filtered by MPAA rating
   I want to see movies matching only certain MPAA ratings
 
 Background: movies have been added to database
+    
 
   Given the following movies exist:
   | title                   | rating | release_date |
@@ -23,14 +24,18 @@ Background: movies have been added to database
   Then 10 seed movies should exist
 
 Scenario: restrict to movies with "PG" or "R" ratings
-  And I check the "PG" checkbox
-  Then complete the rest of of this scenario
   # enter step(s) to check the "PG" and "R" checkboxes
+  Given I check the following ratings: PG, R
   # enter step(s) to uncheck all other checkboxes
+  And I uncheck the following ratings: G, PG-13
   # enter step to "submit" the search form on the homepage
+  When I hit the submit button
   # enter step(s) to ensure that PG and R movies are visible
+  Then I should see the following movies: The Terminator, When Harry Met Sally, Amelie, The Incredibles, Raiders of the Lost Ark  
   # enter step(s) to ensure that other movies are not visible
+  Then I should not see the following movies: Aladdin, 2001: A Space Odyssey, Chicken Run, The Help, Chocolat
 
 Scenario: all ratings selected
   # your steps here
-  Then complete the rest of of this scenario
+  Given I check the following ratings: G, R, PG-13, PG
+  Then I should see all the movies
