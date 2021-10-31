@@ -8,7 +8,6 @@ Given /the following movies exist/ do |movies_table|
                       rating: movie["rating"], 
                       release_date: movie["release_date"])
   end
-#   pending "Fill in this step in movie_steps.rb"
 end
 
 Then /(.*) seed movies should exist/ do | n_seeds |
@@ -21,12 +20,29 @@ end
 Then /I should see "(.*)" before "(.*)"/ do |e1, e2|
   #  ensure that that e1 occurs before e2.
   #  page.body is the entire content of the page as a string.
-  pending "Fill in this step in movie_steps.rb"
+    
+    # Populate a list of all the titles
+    rows = page.all("tr").count - 1
+    titles = []
+    i = 1
+    while i < rows
+        path = %{/html/body/div/main/table/tbody/tr[#{i}]/td[1]}
+        title = find(:xpath, path).text
+        titles.push(title)
+        i += 1
+    end
+    
+    # find the index of e1 in titles
+    e1_index = titles.index(e1)
+    
+    # find the index of e2 in titles
+    e2_index = titles.index(e2)
+    
+    expect(e1_index).to be < e2_index
 end
 
 When('I hit the submit button') do
-#   pending # Write code here that turns the phrase above into concrete actions
-    click_button
+    click_on "ratings_submit"
 end
 
 # Make it easier to express checking or unchecking several boxes at once
@@ -37,29 +53,31 @@ When /I (un)?check the following ratings: (.*)/ do |uncheck, rating_list|
   # HINT: use String#split to split up the rating_list, then
   #   iterate over the ratings and reuse the "When I check..." or
   #   "When I uncheck..." steps in lines 89-95 of web_steps.rb
-#   pending "Fill in this step in movie_steps.rb with beepy bloop"
-    rating_list.split.each do |field|
+    rating_list.split(',').each do |rating|
+        rating = rating.squish
         begin
             if uncheck == nil
-                check(field)
+                check(rating)
             else
-                uncheck(field)
+                uncheck(rating)
             end
         rescue
-            
+            next
         end
-    end
-    
+    end    
 end
 
 # Part 2, Step 3
 Then /^I should (not )?see the following movies: (.*)$/ do |no, movie_list|
   # Take a look at web_steps.rb Then /^(?:|I )should see "([^"]*)"$/
-    byebug
     movie_list.split(",").each do |movie|
         movie = movie.squish
+        if no == nil 
+            expect(page).to have_content(movie)
+        else 
+            expect(page).not_to have_content(movie)
+        end
     end
-  pending "Fill in this step in movie_steps.rb"
 end
 
 Then /I should see all the movies/ do

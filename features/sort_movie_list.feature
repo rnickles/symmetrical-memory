@@ -24,10 +24,13 @@ Background: movies have been added to database
 
 Scenario: sort movies alphabetically
   When I follow "Movie Title"
-  # your steps here
-  Then complete the rest of of this scenario
+  Then I should see "Aladdin" before "Amelie"
+  Then I should see "Chicken Run" before "Chocolat"
+
 
 Scenario: sort movies in increasing order of release date
   When I follow "Release Date"
-  # your steps here
-  Then complete the rest of of this scenario
+  Then I should see "Aladdin" before "Chicken Run"
+  Then I should see "2001: A Space Odyssey" before "Raiders of the Lost Ark"
+
+
